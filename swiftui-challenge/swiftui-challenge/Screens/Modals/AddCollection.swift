@@ -13,9 +13,12 @@ struct AddCollection: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 24) {
+            VStack(alignment: .leading, spacing: 8) {
                 
-                // TextField estilizado
+                Text("Nome da pasta")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                
                 // TextField para o nome da pasta
                     TextField("Insira o nome da sua pasta", text: $collectionName)
                         .padding()
