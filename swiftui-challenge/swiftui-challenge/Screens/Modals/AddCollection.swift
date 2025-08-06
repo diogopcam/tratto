@@ -4,6 +4,7 @@
 //
 //  Created by Diogo Camargo on 05/08/25.
 //
+
 import SwiftUI
 import PhotosUI
 
@@ -11,19 +12,29 @@ struct AddCollection: View {
     
     @Environment(\.dismiss) var dismiss
     @State private var collectionName: String = ""
-    @State private var selectedImageData: Data?
-    @State private var selectedItem: PhotosPickerItem? = nil
     
+    @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var selectedImageDatas: [Data] = []
+    
+    func delete(at index: Int) {
+        selectedImageDatas.remove(at: index)
+    }
+    
+    let columns = [
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible())
+    ]
     
     var body: some View {
         NavigationStack {
+            
             VStack(alignment: .leading, spacing: 24){
                 VStack(alignment: .leading, spacing: 8) {
                     
                     Text("Insira o nome da sua pasta")
                         .font(.custom("HelveticaNeue-Bold", size: 16))
                     
-                    // TextField para o nome da pasta
                     TextField(" ", text: $collectionName)
                         .padding()
                         .background(Color(.systemGray6))
@@ -40,53 +51,75 @@ struct AddCollection: View {
                     Text("Selecionar fotos da galeria")
                         .font(.custom("HelveticaNeue-Bold", size: 16))
                     
-                    ImageActionButton(selectedItem: $selectedItem)
-                        .onChange(of: selectedItem) { newItem in
-                            Task {
-                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                                    // trate a imagem aqui
-                                    print("Imagem selecionada!")
+                    // Primeira "linha customizada" com o botão + duas primeiras imagens
+                    HStack(alignment: .center, spacing: 12) {
+                        ImageActionButton(selectedItems: $selectedItems)
+                            .onChange(of: selectedItems) {
+                                Task {
+                                    selectedImageDatas = []
+                                    for item in selectedItems {
+                                        if let data = try? await item.loadTransferable(type: Data.self) {
+                                            selectedImageDatas.append(data)
+                                        }
+                                    }
                                 }
                             }
+
+                        if selectedImageDatas.indices.contains(0) {
+                            ImageDisplay(imageData: $selectedImageDatas[0], onDelete: { delete(at: 0) })
                         }
+
+                        if selectedImageDatas.indices.contains(1) {
+                            ImageDisplay(imageData: $selectedImageDatas[1], onDelete: { delete(at: 1)})
+                        }
+                    }
                     
+                      LazyVGrid(
+                        columns: columns,
+                        alignment: .leading,
+                        spacing: 12
+                      
+                      ) {
+                          ForEach(selectedImageDatas.indices.dropFirst(2), id: \.self) { index in
+                              ImageDisplay(imageData: $selectedImageDatas[index], onDelete: { delete(at: index) })
+                          }
+                      }
                     Spacer()
                 }
+            
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .resizable()
+                                .frame(width: 44, height: 44)
+                                .foregroundStyle(.gray)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {
+                            print("Coleção salva!")
+                            dismiss()
+                        } label: {
+                            Image(systemName: "arrow.up.circle.fill")
+                                .resizable()
+                                .frame(width: 44, height: 44)
+                                .foregroundStyle(.pink)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                }
             }
-            .padding()
-            .padding(.top, 38)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.backgroundSecondary)
             .navigationTitle("Criar nova pasta")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                // Botão de fechar no canto ESQUERDO
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .resizable()
-                            .frame(width: 44, height: 44) // tamanho personalizado
-                            .foregroundStyle(.gray)
-                    }
-                    .buttonStyle(PlainButtonStyle()) // evita botão inflado do sistema
-                }
-                
-                // Botão de confirmar no canto DIREITO
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        print("Coleção salva!")
-                        dismiss()
-                    } label: {
-                        Image(systemName: "arrow.up.circle.fill")
-                            .resizable()
-                            .frame(width: 44, height: 44)
-                            .foregroundStyle(.pink)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-            }
+            .padding(.top, 38)
+            .padding(.horizontal, 16)
+            .background(Color.backgroundSecondary)
         }
     }
 }

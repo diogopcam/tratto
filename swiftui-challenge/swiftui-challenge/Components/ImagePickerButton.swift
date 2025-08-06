@@ -1,21 +1,20 @@
 //
-//  Primary.swift
+//  ImagePickerButton.swift
 //  swiftui-challenge
 //
-//  Created by Diogo Camargo on 05/08/25.
+//  Created by Diogo Camargo on 06/08/25.
 //
 
 import SwiftUI
 import PhotosUI
 
-struct ImageActionButton: View {
-//    
-    @Binding var selectedItems: [PhotosPickerItem]
+struct ImagePickerButton: View {
+    
+    @Binding var selectedItem: PhotosPickerItem?
 
     var body: some View {
         PhotosPicker(
-            selection: $selectedItems,
-            maxSelectionCount: 10,
+            selection: $selectedItem,
             matching: .images,
             photoLibrary: .shared()
         ) {
@@ -23,11 +22,11 @@ struct ImageActionButton: View {
                 Image(systemName: "plus")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 44, height: 44)
+                    .frame(width: 80, height: 80)
                     .foregroundStyle(.white)
                     .font(.system(size: 44, weight: .light))
             }
-            .frame(width: 113, height: 109)
+            .frame(width: 375, height: 254)
             .background(Color.black)
             .cornerRadius(22)
             .overlay(
@@ -37,4 +36,8 @@ struct ImageActionButton: View {
         }
         .buttonStyle(PlainButtonStyle())
     }
+}
+
+#Preview {
+    AddRefs()
 }
