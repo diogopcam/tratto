@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct swiftui_challengeApp: App {
+    let container = try! ModelContainer(for: Collection.self, Reference.self)
+    
     var body: some Scene {
         WindowGroup {
             TabBar()
+                .modelContainer(container)  
         }
     }
 }

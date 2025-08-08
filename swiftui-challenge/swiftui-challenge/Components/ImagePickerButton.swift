@@ -27,7 +27,7 @@ struct ImagePickerButton: View {
                     .font(.system(size: 44, weight: .light))
             }
             .frame(width: 375, height: 254)
-            .background(Color.black)
+            .background(.black)
             .cornerRadius(22)
             .overlay(
                 RoundedRectangle(cornerRadius: 22)

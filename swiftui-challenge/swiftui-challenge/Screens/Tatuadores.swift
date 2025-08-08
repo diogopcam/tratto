@@ -6,29 +6,33 @@
 //
 
 import SwiftUI
+import SwiftData  // importante para usar ModelContext
 
-// Protocolo, não classe
 struct Tatuadores: View {
+    @Environment(\.modelContext) private var context
     
-    // Variável computada que deve retornar uma view
     var body: some View {
-//            ZStack {
-//                Color.black.ignoresSafeArea()
-            VStack() {
-                Image(systemName: "globe")
-                    .imageScale(.large)
-                    .foregroundStyle(.pink)
-                Text("Tela de tatuadores!").foregroundColor(.white)
+        VStack {
+            Button("Criar coleção teste") {
+                let nova = Collection(title: "Coleção de teste \(Date())")
+                context.insert(nova)
+                do {
+                    try context.save()
+                    print("Coleção salva com sucesso!")
+                } catch {
+                    print("Erro ao salvar coleção:", error)
+                }
             }
             .padding()
-            .navigationTitle("Tatuadores")
-            .background(.backgroundSecondary)
+            
+            // Aqui você pode adicionar outras views da tela de tatuadores
+            Text("Tela Tatuadores")
         }
-
-//    }
+        .padding()
+    }
 }
-
 
 #Preview {
     TabBar()
 }
+

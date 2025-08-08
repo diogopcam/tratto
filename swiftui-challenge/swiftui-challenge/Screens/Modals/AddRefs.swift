@@ -31,9 +31,8 @@ struct AddRefs: View {
                         .font(.custom("HelveticaNeue-Bold", size: 16))
                     
                     TextEditor(text: $collectionName)
+                        .background(Color(.systemGray6)) // cor de fundo
                         .frame(height: 202) // altura fixa
-                        .padding(8) // para não colar nas bordas
-                        .background(Color(.black))
                         .cornerRadius(8)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
@@ -41,9 +40,8 @@ struct AddRefs: View {
                         )
                         .tint(.pink)
                         .multilineTextAlignment(.leading) // alinhamento horizontal
-                        .onAppear {
-                            UITextView.appearance().backgroundColor = .clear // para garantir fundo transparente e não sobrepor cor
-                        }
+                    
+
                     
                     VStack(alignment: .leading, spacing: 8) {
                         
@@ -122,6 +120,7 @@ struct AddRefs: View {
         }
     }
 }
+
     
 #Preview {
     AddRefs()

@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import SwiftData
 
-struct TabBar: View {
+struct TabBar: View {    
     var body: some View {
         
         TabView {

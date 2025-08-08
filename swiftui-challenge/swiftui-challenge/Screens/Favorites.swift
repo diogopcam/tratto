@@ -16,7 +16,7 @@ struct Favorites: View {
     var body: some View {
         RefsEmptyState(addRefs: $addRefs)
             .padding()
-            .navigationTitle("Coleções")
+            .navigationTitle("Favoritos")
             .background(.backgroundPrimary)
 
             .toolbar {

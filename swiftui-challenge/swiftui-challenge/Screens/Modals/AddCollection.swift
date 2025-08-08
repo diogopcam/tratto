@@ -11,14 +11,21 @@ import PhotosUI
 struct AddCollection: View {
     
     @Environment(\.dismiss) var dismiss
-    @State private var collectionName: String = ""
     
+    @State private var collectionName: String = ""
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImageDatas: [Data] = []
     
     func delete(at index: Int) {
         selectedImageDatas.remove(at: index)
     }
+    
+
+    @Environment(\.modelContext) var context
+//       let viewModel = ColecaoViewModel()
+       @State private var nome = ""
+    
+    
     
     let columns = [
         GridItem(.flexible(), spacing: 8),
@@ -102,6 +109,25 @@ struct AddCollection: View {
                     
                     ToolbarItem(placement: .confirmationAction) {
                         Button {
+                            let newCollection = Collection(title: collectionName)
+                            
+                            for data in selectedImageDatas {
+                                if let uiImage = UIImage(data: data) {
+                                    let reference = Reference(text: nil, image: uiImage, collection: newCollection)
+                                    newCollection.references.append(reference)
+                                }
+                            }
+                            
+            
+                            context.insert(newCollection)
+                            
+                            do {
+                                try context.save()
+                                print("Coleção salva com sucesso!")
+                            } catch {
+                                print("Erro ao salvar coleção:", error)
+                            }
+                                
                             print("Coleção salva!")
                             dismiss()
                         } label: {
