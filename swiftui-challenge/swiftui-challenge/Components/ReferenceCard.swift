@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ReferenceCard: View {
     let reference: Reference
+    var action: (() -> Void)? = nil
 
     var image: Image {
         if let uiImage = reference.image {
             return Image(uiImage: uiImage)
         } else {
-            return Image(systemName: "photo") // imagem de fallback
+            return Image(systemName: "photo") // fallback
         }
     }
 
@@ -29,62 +30,57 @@ struct ReferenceCard: View {
     }
 
     var body: some View {
-        ZStack {
-            image
-                .resizable()
-                .scaledToFill()
-                .frame(width: 170, height: 223)
-                .clipped()
-                .cornerRadius(22)
+        Button(action: { action?() }) {
+            ZStack {
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 170, height: 223)
+                    .clipped()
+                    .cornerRadius(22)
 
-            if let overlayText = overlayText {
-                ZStack {
-                    Rectangle()
-                        .fill(
-                            LinearGradient(
-                                gradient: Gradient(colors: [.black.opacity(0.5), .black.opacity(0.5)]),
-                                startPoint: .top,
-                                endPoint: .bottom
+                if let overlayText = overlayText {
+                    ZStack {
+                        Rectangle()
+                            .fill(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [.black.opacity(0.5), .black.opacity(0.5)]),
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
                             )
-                        )
-                        .cornerRadius(22)
+                            .cornerRadius(22)
 
-                    VStack {
-                        Text(overlayText)
-                            .font(.custom("HelveticaNeue-Regular", size: 16))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.top, 20)
-                            .lineLimit(8)
-                            .frame(maxWidth: 170, alignment: .leading)
+                        VStack {
+                            Text(overlayText)
+                                .font(.custom("HelveticaNeue-Regular", size: 16))
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 10)
+                                .padding(.top, 20)
+                                .lineLimit(8)
+                                .frame(maxWidth: 170, alignment: .leading)
 
-                        Spacer()
+                            Spacer()
 
-                        Text("Ref criada em \(creationDateFormatted)")
-                            .font(.custom("HelveticaNeue-Regular", size: 8))
-                            .foregroundColor(.white.opacity(0.8))
-                            .padding([.horizontal, .bottom], 10)
-                            .padding([.vertical, .bottom], 7)
-                            .frame(maxWidth: 170, alignment: .leading)
+                            Text("Ref criada em \(creationDateFormatted)")
+                                .font(.custom("HelveticaNeue-Regular", size: 8))
+                                .foregroundColor(.white.opacity(0.8))
+                                .padding([.horizontal, .bottom], 10)
+                                .padding([.vertical, .bottom], 7)
+                                .frame(maxWidth: 170, alignment: .leading)
+                        }
                     }
+                    .frame(width: 170, height: 223)
+                } else {
+                    VStack {
+                        Spacer()
+                    }
+                    .frame(width: 170, height: 223)
+                    .cornerRadius(22)
                 }
-                .frame(width: 170, height: 223)
-            } else {
-                VStack {
-                    Spacer()
-                    Text("Ref criada em \(creationDateFormatted)")
-                        .font(.custom("HelveticaNeue-Regular", size: 8))
-                        .foregroundColor(.white.opacity(0.8))
-                        .padding([.horizontal, .bottom], 10)
-                        .padding([.vertical, .bottom], 7)
-                        .frame(maxWidth: 170, alignment: .leading)
-                }
-                .frame(width: 170, height: 223)
-                .background(Color.black.opacity(0.3))
-                .cornerRadius(22)
             }
         }
-        .frame(width: 170, height: 223)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

@@ -26,13 +26,10 @@ struct Favorites: View {
                     } label: {
                         Image(systemName: "plus.circle.fill")
                             .resizable()
-                            .frame(width: 48, height: 48)
+                            .frame(width: 44, height: 44)
                             .foregroundStyle(.pink)
                     }
                 }
-            }
-            .sheet(isPresented: $addRefs) {
-                AddRefs()
             }
     }
 }

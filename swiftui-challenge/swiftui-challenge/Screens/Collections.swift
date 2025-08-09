@@ -25,7 +25,7 @@ struct Collections: View {
                         } label: {
                             Image(systemName: "plus.circle.fill")
                                 .resizable()
-                                .frame(width: 48, height: 48)
+                                .frame(width: 44, height: 44)
                                 .foregroundStyle(.pink)
                         }
                     }
