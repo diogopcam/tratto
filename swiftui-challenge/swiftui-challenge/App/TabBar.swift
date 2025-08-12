@@ -13,13 +13,13 @@ struct TabBar: View {
         
         TabView {
             // Tatuadores
-            Tab("Tatuadores", systemImage: "person.2.fill") {
-                
-                // Cada aba é reponsável por uma pilha de navegacao
-                NavigationStack {
-                    Tatuadores()
-                }
-            }
+//            Tab("Tatuadores", systemImage: "person.2.fill") {
+//                
+//                // Cada aba é reponsável por uma pilha de navegacao
+//                NavigationStack {
+//                    Tatuadores()
+//                }
+//            }
             
             // Tatuadores
             Tab("Coleções", systemImage: "photo.fill") {
@@ -30,15 +30,15 @@ struct TabBar: View {
                 }
             }
             
-            Tab("Favoritos", systemImage: "heart.fill") {
-                
-                // Cada aba é reponsável por uma pilha de navegacao
-                NavigationStack {
-                    Favorites()
-                }
-            }
+//            Tab("Favoritos", systemImage: "heart.fill") {
+//                
+//                // Cada aba é reponsável por uma pilha de navegacao
+//                NavigationStack {
+//                    Favorites()
+//                }
+//            }
         }
-        .tint(.pink) // <- cor de destaque da TabBar
+        .tint(.pink)
     }
 }
 

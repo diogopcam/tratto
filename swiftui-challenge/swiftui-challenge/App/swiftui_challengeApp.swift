@@ -15,7 +15,8 @@ struct swiftui_challengeApp: App {
     var body: some Scene {
         WindowGroup {
             TabBar()
-                .modelContainer(container)  
+                .modelContainer(container)
+                .environment(\.colorScheme, .dark)
         }
     }
 }

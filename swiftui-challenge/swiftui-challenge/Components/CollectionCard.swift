@@ -13,8 +13,9 @@ struct CollectionCard: View {
     var collection: Collection
     var isEditing: Bool = false
     var isSelected: Bool = false
-    var action: (() -> Void)? = nil
     
+    var onTap: (() -> Void)?
+    var onLongPress: (() -> Void)?
     
     var title: String
     var images: [Image]
@@ -23,11 +24,12 @@ struct CollectionCard: View {
     let cardWidth: CGFloat = 164
     let cardHeight: CGFloat = 154
 
-    init(collection: Collection, isEditing: Bool = false, isSelected: Bool = false, action: (() -> Void)? = nil) {
+    init(collection: Collection, isEditing: Bool = false, isSelected: Bool = false, onTap: (() -> Void)? = nil, onLongPress: (() -> Void)? = nil) {
         self.collection = collection
         self.isEditing = isEditing
         self.isSelected = isSelected
-        self.action = action
+        self.onTap = onTap
+        self.onLongPress = onLongPress
         self.title = collection.title
         self.itemCount = collection.references.count
         self.images = collection.references.compactMap { reference in
@@ -39,14 +41,12 @@ struct CollectionCard: View {
     }
 
     var body: some View {
-        Button(action: { action?() }) {
-            VStack(alignment: .leading, spacing: 8) {
-                // Container principal das imagens
+        VStack(alignment: .leading, spacing: 8) {
+            ZStack(alignment: .topTrailing) {
                 GeometryReader { geometry in
                     let containerWidth = geometry.size.width
                     let containerHeight = geometry.size.height
                     
-                    // Lógica para layout dinâmico
                     if images.count == 1 {
                         images[0]
                             .resizable()
@@ -84,7 +84,6 @@ struct CollectionCard: View {
                             }
                         }
                     } else {
-                        // 4 ou mais imagens (grid 2x2)
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: 0),
                                          GridItem(.flexible(), spacing: 0)], spacing: 0) {
                             ForEach(0..<min(4, images.count), id: \.self) { index in
@@ -98,20 +97,41 @@ struct CollectionCard: View {
                     }
                 }
                 .frame(width: cardWidth, height: cardHeight)
-                .background(Color(.systemGray5))
-                .cornerRadius(24)
+                .cornerRadius(18)
                 
-                // Título e quantidade (mantido igual)
-                Text(title)
-                    .font(.custom("HelveticaNeue-Bold", size: 17))
-                    .lineLimit(1)
-                
-                Text("\(itemCount) item\(itemCount == 1 ? "" : "s")")
-                    .font(.custom("HelveticaNeue-Thin", size: 12))
-                    .foregroundColor(.gray)
+                if isEditing {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(Color.white, lineWidth: 1)
+                            .frame(width: 24, height: 24)
+                            .background(Color.clear)
+
+                        if isSelected {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.white)
+                                .font(.system(size: 14, weight: .bold))
+                        }
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 8)
+                }
             }
+            
+            Text(title)
+                .font(.custom("HelveticaNeue-Bold", size: 17))
+                .lineLimit(1)
+            
+            Text("\(itemCount) item\(itemCount == 1 ? "" : "s")")
+                .font(.custom("HelveticaNeue-Thin", size: 12))
+                .foregroundColor(.gray)
         }
-        .buttonStyle(PlainButtonStyle())
+        .contentShape(Rectangle()) // Para toda área receber o gesto
+        .onTapGesture {
+            onTap?()
+        }
+        .onLongPressGesture {
+            onLongPress?()
+        }
     }
 }
 
